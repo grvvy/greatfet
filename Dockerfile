@@ -5,15 +5,7 @@ FROM ubuntu:19.10
 WORKDIR /usr/src/app
 
 # Install prerequisites
-# RUN apt-get update
-# RUN apt-get -y install sudo
-# RUN apt-get -y install cmake
-# RUN apt-get -y install gcc-arm-none-eabi
-# RUN apt-get -y install python3
-# RUN apt-get -y install python3-pip
-# RUN apt-get -y install git
-# RUN apt-get -y install libusb-1.0-0
-
+RUN apt-get update
 
 # Add Jenkins as a user with sufficient permissions
 RUN useradd -u 125 jenkins
