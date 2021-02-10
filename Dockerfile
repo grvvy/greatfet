@@ -10,7 +10,6 @@ RUN groupadd -g 136 jenkins
 RUN useradd -r -u 125 -g jenkins -d /home/jenkins jenkins
 RUN gpasswd -a jenkins plugdev
 RUN chown jenkins:jenkins /home/jenkins
-USER jenkins
 
 # Install prerequisites
 RUN apt-get update && apt-get install -y
@@ -20,6 +19,8 @@ RUN apt-get -y install python3
 RUN apt-get -y install python3-pip
 RUN apt-get -y install libusb-1.0-0
 RUN apt-get -y install git
+
+USER jenkins
 
 # Inform Docker that the container is listening on the specified port at runtime.
 EXPOSE 8080
