@@ -9,7 +9,7 @@ RUN useradd -u 125 jenkins
 RUN gpasswd -a jenkins plugdev
 
 # Install prerequisites
-RUN apt-get update
+RUN apt-get update && apt-get install -y
 RUN apt-get -y install cmake
 RUN apt-get -y install gcc-arm-none-eabi
 RUN apt-get -y install python3
