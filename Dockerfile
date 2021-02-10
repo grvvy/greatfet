@@ -8,8 +8,6 @@ WORKDIR /usr/src/greatfet
 RUN useradd -u 125 jenkins
 RUN gpasswd -a jenkins plugdev
 
-USER jenkins
-
 # Install prerequisites
 RUN apt-get update && apt-get install -y
 RUN apt-get -y install cmake
