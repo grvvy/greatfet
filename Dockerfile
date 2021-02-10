@@ -15,6 +15,7 @@ RUN chown jenkins:jenkins /home/jenkins
 RUN apt-get update && apt-get install -y
 RUN apt-get -y install cmake
 RUN apt-get -y install gcc-arm-none-eabi
+RUN apt-get -y install python2
 RUN apt-get -y install python3
 RUN apt-get -y install python3-pip
 RUN apt-get -y install libusb-1.0-0
