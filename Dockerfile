@@ -9,6 +9,7 @@ RUN mkdir /home/jenkins
 RUN groupadd -g 136 jenkins
 RUN useradd -r -u 125 -g jenkins -d /home/jenkins jenkins
 RUN gpasswd -a jenkins plugdev
+RUN chown jenkins:jenkins /home/jenkins
 USER jenkins
 
 # Install prerequisites
