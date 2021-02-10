@@ -4,6 +4,9 @@ FROM ubuntu:19.10
 # Set the working directory
 WORKDIR /usr/src/app
 
+# check filesystem
+RUN ls
+
 # Install prerequisites
 RUN apt-get update
 
