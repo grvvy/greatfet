@@ -15,6 +15,7 @@ RUN apt-get -y install gcc-arm-none-eabi
 RUN apt-get -y install python3
 RUN apt-get -y install python3-pip
 RUN apt-get -y install libusb-1.0-0
+RUN apt-get -y install git
 
 # Inform Docker that the container is listening on the specified port at runtime.
 EXPOSE 8080
