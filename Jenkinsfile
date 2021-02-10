@@ -27,6 +27,12 @@ pipeline {
                     echo "Python versions:"
                     python2 -V
                     python3 -V
+                    echo "python2 location:"
+                    which python
+                    echo "python3 location:"
+                    which python3
+                    echo "INSTALLING PYYAML AGAIN WOOOOOOOOOOOO ***************************************************************************************************"
+                    /usr/bin/python3 -m pip install pyyaml
                     echo "ACTIVATING PYTHON VIRTUAL ENVIRONMENT ***************************************************************************************************"
                     python3 -m venv testing-venv
                     source testing-venv/bin/activate
