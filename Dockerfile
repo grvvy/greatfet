@@ -4,12 +4,6 @@ FROM ubuntu:19.10
 # Set the working directory
 WORKDIR /usr/src/app
 
-# check filesystem
-RUN ls
-
-# Install prerequisites
-RUN apt-get update
-
 # Add Jenkins as a user with sufficient permissions
 RUN useradd -u 125 jenkins
 RUN gpasswd -a jenkins plugdev
