@@ -13,13 +13,16 @@ RUN chown jenkins:jenkins /home/jenkins
 
 # Install prerequisites
 RUN apt-get update && apt-get install -y
-RUN add-apt-repository -y universe
 RUN apt-get -y install cmake
 RUN apt-get -y install gcc-arm-none-eabi
 RUN apt-get -y install python2
 RUN apt-get -y install python3
+
+RUN apt-get install software-properties-common
+RUN add-apt-repository -y universe
 RUN curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py
 RUN python2 get-pip.py
+
 RUN apt-get -y install python3-pip
 RUN apt-get -y install libusb-1.0-0
 RUN apt-get -y install git
