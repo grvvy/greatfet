@@ -29,7 +29,7 @@ pipeline {
                     python3 -V
                     echo "ACTIVATING PYTHON VIRTUAL ENVIRONMENT ***************************************************************************************************"
                     python3 -m venv testing-venv
-                    source testing-venv/activate
+                    source testing-venv/bin/activate
                     echo "INSTALLING libgreat/host ****************************************************************************************************************"
                     pushd libgreat/host/
                     python3 setup.py build
