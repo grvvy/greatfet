@@ -8,6 +8,8 @@ pipeline {
         stage('build') {
             steps {
                 sh '''#!/bin/bash
+                    echo "USER before export:"
+                    echo $USER
                     export USER=jenkins
                     echo "HOME:"
                     echo $HOME
