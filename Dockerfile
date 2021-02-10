@@ -21,7 +21,7 @@ RUN apt-get -y install python3
 RUN apt-get -y install software-properties-common
 RUN add-apt-repository -y universe
 RUN apt-get -y install curl
-RUN curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py
+RUN curl https://bootstrap.pypa.io/2.7/get-pip.py --output get-pip.py
 RUN python2 get-pip.py
 
 RUN apt-get -y install python3-pip
