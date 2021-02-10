@@ -24,18 +24,35 @@ pipeline {
                     cat /etc/group
                     echo "/dev/:"
                     ls /dev/
-                    pip3 install PyYAML
+                    echo "Python versions:"
+                    python2 -V
+                    python3 -V
+                    echo "ACTIVATING PYTHON VIRTUAL ENVIRONMENT ***************************************************************************************************"
+                    python3 -m venv testing-venv
+                    source testing-venv/activate
+                    echo "INSTALLING libgreat/host ****************************************************************************************************************"
                     pushd libgreat/host/
                     python3 setup.py build
-                    python3 setup.py install
+                    python3 setup.py install --user
                     popd
+                    echo "INSTALLING host ***********************************************************************************************************************"
                     pushd host/
                     python3 setup.py build
-                    python3 setup.py install
+                    python3 setup.py install --user
                     popd
-                    make firmware
-                    pushd firmware/build/greatfet_usb/
+                    echo "MAKING firmware *************************************************************************************************************************************"
+                    cd firmware/libopencm3
+                    make
+                    cd ../greatfet_usb
+                    mkdir build
+                    cd build
+                    cmake ..
+                    make
+                    echo "FLASHING firmware ***********************************************************************************************************************"
                     greatfet_firmware -w greatfet_usb.bin -R
+                    echo "DEACTIVATING AND REMOVING THE VIRTUAL ENVIRONMENT ***************************************************************************************"
+                    deactivate
+                    rm -rf testing-venv
                 '''
             }
         }
