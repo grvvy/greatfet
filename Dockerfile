@@ -22,6 +22,9 @@ RUN apt-get -y install libusb-1.0-0
 RUN apt-get -y install git
 RUN apt-get -y install python3-venv
 RUN apt-get -y install python-yaml
+RUN apt-get -y install python3-yaml
+RUN pip install PyYAML
+RUN pip3 install PyYAML
 
 USER jenkins
 
