@@ -33,12 +33,12 @@ pipeline {
                     echo "INSTALLING libgreat/host ****************************************************************************************************************"
                     pushd libgreat/host/
                     python3 setup.py build
-                    python3 setup.py install --user
+                    python3 setup.py install
                     popd
                     echo "INSTALLING host ***********************************************************************************************************************"
                     pushd host/
                     python3 setup.py build
-                    python3 setup.py install --user
+                    python3 setup.py install
                     popd
                     echo "MAKING firmware *************************************************************************************************************************************"
                     cd firmware/libopencm3
