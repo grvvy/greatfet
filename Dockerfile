@@ -7,7 +7,7 @@ WORKDIR /usr/src/greatfet
 # Add Jenkins as a user with sufficient permissions
 RUN mkdir /home/jenkins
 RUN groupadd -g 136 jenkins
-RUN useradd -r -u 125 jenkins -g jenkins -d /home/jenkins jenkins
+RUN useradd -r -u 125 -g jenkins -d /home/jenkins jenkins
 RUN gpasswd -a jenkins plugdev
 USER jenkins
 
