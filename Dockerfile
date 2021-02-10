@@ -1,5 +1,5 @@
 # Use the official image as a parent image
-FROM ubuntu:19.10
+FROM ubuntu:20.04
 
 # Set the working directory
 WORKDIR /usr/src/greatfet
