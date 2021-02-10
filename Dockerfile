@@ -1,5 +1,3 @@
-ARG device="/dev/bus/usb/*"
-
 # Use the official image as a parent image
 FROM ubuntu:20.04
 
