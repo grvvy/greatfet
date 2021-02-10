@@ -1,5 +1,9 @@
 pipeline {
-    agent { dockerfile true }
+    agent { 
+        dockerfile {
+            args '--device="/dev/ttyUSB0"'
+        }
+    }
     environment {
         GIT_COMMITER_NAME = 'CI Person'
         GIT_COMMITER_EMAIL = 'ci@greatscottgadgets.com'
