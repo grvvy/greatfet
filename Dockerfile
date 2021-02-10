@@ -12,8 +12,8 @@ RUN gpasswd -a jenkins plugdev
 RUN chown jenkins:jenkins /home/jenkins
 
 # Install prerequisites
-RUN add-apt-repository -y universe
 RUN apt-get update && apt-get install -y
+RUN add-apt-repository -y universe
 RUN apt-get -y install cmake
 RUN apt-get -y install gcc-arm-none-eabi
 RUN apt-get -y install python2
