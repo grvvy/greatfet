@@ -1,7 +1,7 @@
 pipeline {
     agent { 
         dockerfile {
-            args '--device="/dev/ttyUSB0"'
+            args '--privileged'
         }
     }
     environment {
@@ -35,11 +35,12 @@ pipeline {
                     which python
                     echo "python3 location:"
                     which python3
-                    echo "INSTALLING PYYAML AGAIN WOOOOOOOOOOOO ***************************************************************************************************"
-                    /usr/bin/python3 -m pip install pyyaml
                     echo "ACTIVATING PYTHON VIRTUAL ENVIRONMENT ***************************************************************************************************"
                     python3 -m venv testing-venv
                     source testing-venv/bin/activate
+                    echo "INSTALLING PYYAML AGAIN WOOOOOOOOOOOO ***************************************************************************************************"
+                    pip install pyyaml
+                    /usr/bin/python3 -m pip install pyyaml
                     echo "INSTALLING libgreat/host ****************************************************************************************************************"
                     pushd libgreat/host/
                     python3 setup.py build
@@ -52,6 +53,7 @@ pipeline {
                     popd
                     echo "MAKING firmware *************************************************************************************************************************************"
                     cd firmware/libopencm3
+                    make clean
                     make
                     cd ../greatfet_usb
                     mkdir build
