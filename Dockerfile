@@ -29,6 +29,7 @@ RUN apt-get -y install libusb-1.0-0
 RUN apt-get -y install git
 RUN apt-get -y install python3-venv
 RUN git clone https://github.com/mvp/uhubctl
+RUN ls
 RUN cd uhubctl
 RUN ls
 RUN make
