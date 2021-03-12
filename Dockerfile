@@ -28,6 +28,11 @@ RUN apt-get -y install python3-pip
 RUN apt-get -y install libusb-1.0-0
 RUN apt-get -y install git
 RUN apt-get -y install python3-venv
+RUN git clone https://github.com/mvp/uhubctl
+RUN cd uhubctl
+RUN make
+RUN make install
+RUN cd ..
 
 USER jenkins
 

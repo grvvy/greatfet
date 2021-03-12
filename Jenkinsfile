@@ -1,7 +1,7 @@
 pipeline {
     agent { 
         dockerfile {
-            args '--privileged'
+            args '--group-add=46 --privileged -v /dev/bus/usb:/dev/bus/usb'
         }
     }
     environment {
@@ -14,16 +14,14 @@ pipeline {
                 sh '''#!/bin/bash
                     echo "USER before export:"
                     echo $USER
-                    export USER=jenkins
-                    echo "HOME:"
-                    echo $HOME
-                    echo "USER:"
-                    echo $USER
                     echo "ID:"
                     id
+                    echo "groups:"
                     groups
                     echo "wmoami:"
                     whoami
+                    echo "HOME:"
+                    echo $HOME
                     echo "cat groups:"
                     cat /etc/group
                     echo "/dev/:"
@@ -35,6 +33,8 @@ pipeline {
                     which python
                     echo "python3 location:"
                     which python3
+                    echo "UHub:"
+                    uhubctl
                     echo "ACTIVATING PYTHON VIRTUAL ENVIRONMENT ***************************************************************************************************"
                     python3 -m venv testing-venv
                     source testing-venv/bin/activate
@@ -46,12 +46,15 @@ pipeline {
                     python3 setup.py build
                     python3 setup.py install
                     popd
-                    echo "INSTALLING host ***********************************************************************************************************************"
+                    echo "INSTALLING host *************************************************************************************************************************"
                     pushd host/
                     python3 setup.py build
                     python3 setup.py install
                     popd
-                    echo "MAKING firmware *************************************************************************************************************************************"
+                    greatfet_info
+                    echo "UHub:"
+                    uhubctl
+                    echo "MAKING firmware *************************************************************************************************************************"
                     cd firmware/libopencm3
                     make clean
                     make
@@ -61,10 +64,16 @@ pipeline {
                     cmake ..
                     make
                     echo "FLASHING firmware ***********************************************************************************************************************"
+                    greatfet_info
                     greatfet_firmware -w greatfet_usb.bin -R
+                    echo "Sleep for 1s.."
+                    sleep 1s
+                    greatfet_info
+                    echo "UHub:"
+                    uhubctl
                     echo "DEACTIVATING AND REMOVING THE VIRTUAL ENVIRONMENT ***************************************************************************************"
                     deactivate
-                    rm -rf testing-venv
+                    rm -rf testing-venv/
                 '''
             }
         }
