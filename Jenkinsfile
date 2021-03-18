@@ -14,20 +14,15 @@ pipeline {
                 sh '''#!/bin/bash
                     echo "UHub:"
                     uhubctl
-                    echo "ACTIVATING PYTHON VIRTUAL ENVIRONMENT ***************************************************************************************************"
-                    python3 -m venv testing-venv
-                    source testing-venv/bin/activate
-                    echo "INSTALLING PYYAML  ***************************************************************************************************"
-                    pip install pyyaml
                     echo "INSTALLING libgreat/host ****************************************************************************************************************"
                     pushd libgreat/host/
                     python3 setup.py build
-                    python3 setup.py install
+                    python3 setup.py install --user
                     popd
                     echo "INSTALLING host *************************************************************************************************************************"
                     pushd host/
                     python3 setup.py build
-                    python3 setup.py install
+                    python3 setup.py install --user
                     popd
                     greatfet_info
                     echo "UHub:"
@@ -54,9 +49,6 @@ pipeline {
                     echo "UHub:"
                     uhubctl
                     cd ../../..
-                    echo "DEACTIVATING AND REMOVING THE VIRTUAL ENVIRONMENT ***************************************************************************************"
-                    deactivate
-                    rm -rf testing-venv/
                 '''
             }
         }
