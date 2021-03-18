@@ -38,6 +38,8 @@ RUN git clone https://github.com/mvp/uhubctl
 RUN make -C uhubctl/
 RUN make install -C uhubctl/
 
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
 USER jenkins
 
 # Inform Docker that the container is listening on the specified port at runtime.
