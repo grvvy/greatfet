@@ -8,7 +8,6 @@ WORKDIR /usr/src/greatfet
 RUN mkdir /home/jenkins
 RUN groupadd -g 136 jenkins
 RUN useradd -r -u 125 -g jenkins -G plugdev -d /home/jenkins jenkins
-RUN gpasswd -a jenkins plugdev
 RUN chown jenkins:jenkins /home/jenkins
 
 # Install prerequisites
@@ -23,17 +22,12 @@ RUN add-apt-repository -y universe
 RUN apt-get -y install curl
 RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py
 RUN python2 get-pip.py
+
 RUN apt-get -y install python3-pip
 RUN apt-get -y install libusb-1.0-0
 RUN apt-get -y install libusb-1.0-0-dev
 RUN apt-get -y install git
 RUN apt-get -y install python3-venv
-RUN apt-get -y install python-yaml
-RUN apt-get -y install python3-yaml
-
-RUN pip install PyYAML
-RUN pip3 install PyYAML
-
 RUN git clone https://github.com/mvp/uhubctl
 RUN make -C uhubctl/
 RUN make install -C uhubctl/

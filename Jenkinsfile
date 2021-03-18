@@ -14,6 +14,11 @@ pipeline {
                 sh '''#!/bin/bash
                     echo "UHub:"
                     uhubctl
+                    echo "ACTIVATING PYTHON VIRTUAL ENVIRONMENT ***************************************************************************************************"
+                    python3 -m venv testing-venv
+                    source testing-venv/bin/activate
+                    echo "INSTALLING PYYAML  ***************************************************************************************************"
+                    pip install pyyaml
                     echo "INSTALLING libgreat/host ****************************************************************************************************************"
                     pushd libgreat/host/
                     python3 setup.py build
@@ -36,12 +41,12 @@ pipeline {
                     cd build
                     cmake ..
                     make
-                    greatfet_info
                     echo "DFUing firmware   ***********************************************************************************************************************"
                     greatfet_firmware -V greatfet_usb.bin
                     echo "Sleep for 1s.."
                     sleep 1s
                     echo "FLASHING firmware ***********************************************************************************************************************"
+                    greatfet_info
                     greatfet_firmware -w greatfet_usb.bin
                     echo "Sleep for 1s.."
                     sleep 1s
@@ -49,6 +54,9 @@ pipeline {
                     echo "UHub:"
                     uhubctl
                     cd ../../..
+                    echo "DEACTIVATING AND REMOVING THE VIRTUAL ENVIRONMENT ***************************************************************************************"
+                    deactivate
+                    rm -rf testing-venv/
                 '''
             }
         }
