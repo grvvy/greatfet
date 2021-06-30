@@ -34,9 +34,7 @@ RUN apt-get -y install python3-yaml
 RUN pip install PyYAML
 RUN pip3 install PyYAML
 
-RUN git clone https://github.com/mvp/uhubctl
-RUN make -C uhubctl/
-RUN make install -C uhubctl/
+RUN pip install --upgrade capablerobot_usbhub
 
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
