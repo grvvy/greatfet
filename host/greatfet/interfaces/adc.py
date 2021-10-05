@@ -5,6 +5,7 @@
 from ..interface import GreatFETInterface
 
 # dummy comment for jenkins testing
+# and another one
 
 class ADC(GreatFETInterface):
     """
