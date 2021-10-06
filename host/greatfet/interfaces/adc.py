@@ -4,6 +4,8 @@
 
 from ..interface import GreatFETInterface
 
+# dummy comment for jenkins PR build testing
+
 class ADC(GreatFETInterface):
     """
     Class representing a GreatFET ADC, which defaults to ADC 0 connected to J2_P5 on Azaela, with 10
