@@ -2,6 +2,8 @@
 # This file is part of GreatFET
 #
 
+# dummy comment
+
 from ..interface import GreatFETInterface
 
 from warnings import warn
