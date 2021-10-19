@@ -2,21 +2,6 @@
  * This file is part of GreatFET
  */
 
-#include <debug.h>
-#include <errno.h>
-#include <string.h>
-#include <toolchain.h>
-
-#include <greatfet_core.h>
-
-#include <drivers/comms.h>
-#include <drivers/memory/allocator.h>
-
-#include <i2c.h>
-#include <i2c_bus.h>
-
-#include "../usb_streaming.h"
-
 
 #define CLASS_NUMBER_SELF (0x108)
 
@@ -35,22 +20,6 @@ typedef struct {
 
 // Pointer to a buffer that stores the I2C write data used in e.g. streaming I2C reads.
 static i2c_stream_t stream;
-
-
-static int i2c_verb_start(struct command_transaction *trans)
-{
-	uint16_t duty_cycle_count;
-	uint16_t value = comms_argument_parse_uint16_t(trans);
-
-	if (value == 0) {
-		duty_cycle_count = 255;
-	} else {
-		duty_cycle_count = value;
-	}
-	i2c_bus_start(&i2c0, duty_cycle_count);
-
-	return 0;
-}
 
 static int i2c_verb_stop()
 {
