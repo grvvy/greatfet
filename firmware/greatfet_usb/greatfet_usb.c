@@ -67,6 +67,7 @@ void init_usb0(void) {
 
 int main(void)
 {
+	while(1);
 	pin_setup();
 	heartbeat_init();
 
