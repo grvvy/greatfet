@@ -2,9 +2,9 @@
 FROM ubuntu:20.04
 
 # Add Jenkins as a user with sufficient permissions
-# RUN groupadd -g 1000 jenkins
+RUN groupadd -g 1000 jenkins
+RUN useradd --create-home --shell /bin/bash -u 1000 -g 1000 -G 46 jenkins
 # RUN useradd -r -u 126 -g jenkins -G plugdev -d /home/jenkins jenkins
-# RUN useradd --create-home --shell /bin/bash -u 1000 -g 1000 -G 46 jenkins
 # WORKDIR /home/jenkins
 CMD ["/bin/bash"]
 
