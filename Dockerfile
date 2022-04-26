@@ -1,16 +1,9 @@
-# Use the official image as a parent image
+# Sandbox test environment for GreatFET
 FROM ubuntu:20.04
-
-# Add Jenkins as a user with sufficient permissions
-# RUN groupadd -g 1000 jenkins
-# RUN useradd --create-home --shell /bin/bash -u 1000 -g 1000 -G 46 jenkins
-# RUN useradd -r -u 126 -g jenkins -G plugdev -d /home/jenkins jenkins
-# WORKDIR /home/jenkins
 CMD ["/bin/bash"]
 
-# override interactive installations
+# Override interactive installations and install prerequisite programs
 ENV DEBIAN_FRONTEND=noninteractive 
-# Install prerequisites
 RUN apt-get update && apt-get install -y \
     cmake \
     curl \
@@ -24,7 +17,5 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 RUN pip3 install capablerobot_usbhub
 
-# Inform Docker that the container is listening on the specified port at runtime.
+# Inform Docker that the container is listening on port 8080 at runtime
 EXPOSE 8080
-# USER jenkins
-# COPY --chown=jenkins:jenkins . .
