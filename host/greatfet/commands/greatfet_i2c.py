@@ -26,7 +26,7 @@ def main():
                         help="Number of bytes expecting to receive from the I2C Bus")
     parser.add_argument('-w', '--write', nargs='*', type=ast.literal_eval, default=[],
                         help="Bytes to send over the I2C Bus")
-    parser.add_argument('-z', '--scan', action='store_true', help="Just testing the webhook here. And again now. And a third test.")
+    parser.add_argument('-z', '--scan', action='store_true', help="Just testing the webhook here. And again now. And a third test. And a fourth.")
     args = parser.parse_args()
 
     log_function = log_verbose if args.verbose else log_silent
