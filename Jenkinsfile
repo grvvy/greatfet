@@ -22,6 +22,8 @@ pipeline {
                     sh 'git clean -d -f -f -q -x'
                     sh 'cat Jenkinsfile'
                     sh 'cat Dockerfile'
+                    sh 'cp ${safeJenkinsfile} Jenkinsfile'
+                    sh 'cp ${safeDockerfile} Dockerfile'
                 }
 
             }
