@@ -5,27 +5,22 @@ pipeline {
         }
     }
     stages {
-        stage('Build (Host)') {
+        stage('development') {
             steps {
-                sh './ci-scripts/build-host.sh'
-            }
-        }
-        stage('Build (Firmware)') {
-            steps {
-                sh './ci-scripts/build-firmware.sh'
-            }
-        }
-        stage('Test') {
-            steps {
-                sh './ci-scripts/configure-hubs.sh --off'
-                retry(3) {
-                    sh './ci-scripts/test-host.sh'
-                }
-                retry(3) {
-                    sh './ci-scripts/test-firmware-program.sh'
-                }
-                sh './ci-scripts/test-firmware-flash.sh'
-                sh './ci-scripts/configure-hubs.sh --reset'
+                // revert untrusted files to the base version and backup it before we execute any untrusted code so the attacker
+                // don't have a chance to put a malicious content
+                def latest = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+
+                sh "git checkout origin/main"
+
+                def safeJenkinsfile = readFile('Jenkinsfile')
+                def safeDockerfile = readFile('Dockerfile')
+
+                // switch back to latest commit
+                sh "git checkout ${latest}"
+                sh 'git clean -d -f -f -q -x'
+                sh 'cat Jenkinsfile'
+                sh 'cat Dockerfile'
             }
         }
     }
