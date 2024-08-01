@@ -24,6 +24,7 @@ pipeline {
                     sh 'cat Dockerfile'
                     sh 'cp ${safeJenkinsfile} Jenkinsfile'
                     sh 'cp ${safeDockerfile} Dockerfile'
+                    sh 'echo hello'
                 }
 
             }
