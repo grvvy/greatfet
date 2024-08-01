@@ -25,6 +25,7 @@ pipeline {
                     sh 'cp ${safeJenkinsfile} Jenkinsfile'
                     sh 'cp ${safeDockerfile} Dockerfile'
                     sh 'echo hello'
+                    sh 'echo hello'
                 }
 
             }
