@@ -26,6 +26,7 @@ pipeline {
                     sh 'cp ${safeDockerfile} Dockerfile'
                     sh 'echo hello'
                     sh 'echo hello'
+                    sh 'echo hello'
                 }
 
             }
