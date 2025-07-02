@@ -2,6 +2,11 @@
 FROM ubuntu:22.04
 USER root
 
+# Copy generalized usb hub script from Jenkins' container
+COPY --from=gsg-jenkins /startup/hubs.py /startup/hubs.py
+COPY --from=gsg-jenkins /startup/.hubs /startup/.hubs
+RUN ln -s /startup/hubs.py /usr/local/bin/hubs
+
 # Override interactive installations and install prerequisite programs
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
