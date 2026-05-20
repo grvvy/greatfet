@@ -16,7 +16,7 @@ pipeline {
                 }
             }
             steps {
-                sh './ci-scripts/build-host.sh'
+                runCommand("Build Host Tools", './ci-scripts/build-host.sh', 3, 2, 'MINUTES')
             }
         }
         stage('Build (Firmware)') {
@@ -27,7 +27,7 @@ pipeline {
                 }
             }
             steps {
-                sh './ci-scripts/build-firmware.sh'
+                runCommand("Build Firmware Images", './ci-scripts/build-firmware.sh', 3, 2, 'MINUTES')
             }
         }
         stage('HIL Test') {
@@ -48,11 +48,28 @@ pipeline {
                 lock('HIL_hubs') {
                     script {
                         allOff()
-                        reset('greatfet')
-                        runCommand(3, 2, 'MINUTES', "HIL Host Tool Installation Check", './ci-scripts/test-host.sh')
-                        reset('greatfet')
-                        runCommand(3, 5, 'MINUTES', "HIL Firmware Volatile Upload", './ci-scripts/test-firmware-program.sh')
-                        runCommand(3, 5, 'MINUTES', "HIL Firmware Volatile Upload", './ci-scripts/test-firmware-flash.sh')
+                        runTests(
+                            'greatfet',
+                            [
+                                [
+                                    title: "HIL Host Tool Installation Check",
+                                    cmd: './ci-scripts/test-host.sh'
+                                ]
+                            ]
+                        )
+                        runTests(
+                            'greatfet',
+                            [
+                                [
+                                    title: "HIL Firmware Volatile Upload",
+                                    cmd: './ci-scripts/test-firmware-program.sh'
+                                ],
+                                [
+                                    title: "HIL Firmware Write",
+                                    cmd: './ci-scripts/test-firmware-flash.sh'
+                                ]
+                            ]
+                        )
                     }
                 }
             }
@@ -68,17 +85,7 @@ pipeline {
     }
 }
 
-def allOff() {
-    // Allow up to 3 retries, 20 seconds each, for the USB hub port power server to respond
-    runCommand(3, 20, 'SECONDS', 'USB hub port power server command', "hubs all off")
-}
-
-def reset(devices) {
-    // Allow up to 3 retries, 20 seconds each, for the USB hub port power server to respond
-    runCommand(3, 20, 'SECONDS', 'USB hub port power server command', "hubs ${devices} reset")
-}
-
-def runCommand(retries, time, unit, title, cmd) {
+def runCommand(title, cmd, retries, time, unit) {
     retry(retries) {
         try {
             timeout(time: time, unit: unit) {
@@ -99,4 +106,32 @@ def runCommand(retries, time, unit, title, cmd) {
             throw err
         }
     }
+}
+
+def runTests(devices, cmds) {
+    retry(3) {
+        // reset() retains it's own internal retries
+        reset(devices)
+        sh 'sleep 1s'
+        // run the test with 0 internal retries and 3 external retries to ensure resets between runs
+        for (test in cmds) {
+            runCommand(
+                test.title,
+                test.cmd,
+                0,
+                5,
+                'MINUTES'
+            )
+        }
+    }
+}
+
+def allOff() {
+    // Allow up to 3 retries, 20 seconds each, for the USB hub port power server to respond
+    runCommand('USB hub port power server command', "hubs all off", 3, 20, 'SECONDS')
+}
+
+def reset(devices) {
+    // Allow up to 3 retries, 20 seconds each, for the USB hub port power server to respond
+    runCommand('USB hub port power server command', "hubs ${devices} reset", 3, 20, 'SECONDS')
 }
