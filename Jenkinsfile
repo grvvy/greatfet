@@ -16,7 +16,7 @@ pipeline {
                 }
             }
             steps {
-                sh './ci-scripts/build-host.sh'
+                runCommand("Build Host Tools", './ci-scripts/build-host.sh', 3, 2, 'MINUTES')
             }
         }
         stage('Build (Firmware)') {
@@ -27,7 +27,7 @@ pipeline {
                 }
             }
             steps {
-                sh './ci-scripts/build-firmware.sh'
+                runCommand("Build Firmware Images", './ci-scripts/build-firmware.sh', 3, 2, 'MINUTES')
             }
         }
         stage('HIL Test') {
@@ -45,56 +45,33 @@ pipeline {
                 }
             }
             steps {
-                retry(3) {
+                lock('HIL_hubs') {
                     script {
-                        try {
-                            // Allow 20 seconds for the USB hub port power server to respond
-                            timeout(time: 20, unit: 'SECONDS') {
-                                sh 'hubs all off'
-                                sh 'hubs greatfet reset'
-                            }
-                        } catch (FlowInterruptedException err) {
-                            // Check if the cause was specifically an exceeded timeout
-                            def cause = err.getCauses().get(0)
-                            if (cause instanceof org.jenkinsci.plugins.workflow.steps.TimeoutStepExecution.ExceededTimeout) {
-                                echo "USB hub port power server command timeout reached."
-                                throw err // Re-throw the exception to fail the build
-                            } else {
-                                echo "Build interrupted for another reason."
-                                throw err // Re-throw the exception to fail the build
-                            }
-                        } catch (Exception err) {
-                            echo "An unrelated error occurred: ${err.getMessage()}"
-                            throw err
-                        }
+                        allOff()
+                        runTests(
+                            'greatfet',
+                            [
+                                [
+                                    title: "HIL Host Tool Installation Check",
+                                    cmd: './ci-scripts/test-host.sh'
+                                ]
+                            ]
+                        )
+                        runTests(
+                            'greatfet',
+                            [
+                                [
+                                    title: "HIL Firmware Volatile Upload",
+                                    cmd: './ci-scripts/test-firmware-program.sh'
+                                ],
+                                [
+                                    title: "HIL Firmware Write",
+                                    cmd: './ci-scripts/test-firmware-flash.sh'
+                                ]
+                            ]
+                        )
                     }
-                    sh './ci-scripts/test-host.sh'
                 }
-                retry(3) {
-                    script {
-                        try {
-                            // Allow 20 seconds for the USB hub port power server to respond
-                            timeout(time: 20, unit: 'SECONDS') {
-                                sh 'hubs greatfet reset'
-                            }
-                        } catch (FlowInterruptedException err) {
-                            // Check if the cause was specifically an exceeded timeout
-                            def cause = err.getCauses().get(0)
-                            if (cause instanceof org.jenkinsci.plugins.workflow.steps.TimeoutStepExecution.ExceededTimeout) {
-                                echo "USB hub port power server command timeout reached."
-                                throw err // Re-throw the exception to fail the build
-                            } else {
-                                echo "Build interrupted for another reason."
-                                throw err // Re-throw the exception to fail the build
-                            }
-                        } catch (Exception err) {
-                            echo "An unrelated error occurred: ${err.getMessage()}"
-                            throw err
-                        }
-                    }
-                    sh './ci-scripts/test-firmware-program.sh'
-                }
-                sh './ci-scripts/test-firmware-flash.sh'
             }
         }
     }
@@ -106,4 +83,55 @@ pipeline {
                     notFailBuild: true)
         }
     }
+}
+
+def runCommand(title, cmd, retries, time, unit) {
+    retry(retries) {
+        try {
+            timeout(time: time, unit: unit) {
+                sh "${cmd}"
+            }
+        } catch (FlowInterruptedException err) {
+            // Check if the cause was specifically an exceeded timeout
+            def cause = err.getCauses().get(0)
+            if (cause instanceof org.jenkinsci.plugins.workflow.steps.TimeoutStepExecution.ExceededTimeout) {
+                echo "${title} timeout reached."
+                throw err // Re-throw the exception to fail the build
+            } else {
+                echo "Build interrupted for another reason."
+                throw err // Re-throw the exception to fail the build
+            }
+        } catch (Exception err) {
+            echo "An unrelated error occurred: ${err.getMessage()}"
+            throw err
+        }
+    }
+}
+
+def runTests(devices, cmds) {
+    retry(3) {
+        // reset() retains it's own internal retries
+        reset(devices)
+        sh 'sleep 1s'
+        // run the test with 0 internal retries and 3 external retries to ensure resets between runs
+        for (test in cmds) {
+            runCommand(
+                test.title,
+                test.cmd,
+                0,
+                5,
+                'MINUTES'
+            )
+        }
+    }
+}
+
+def allOff() {
+    // Allow up to 3 retries, 20 seconds each, for the USB hub port power server to respond
+    runCommand('USB hub port power server command', "hubs all off", 3, 20, 'SECONDS')
+}
+
+def reset(devices) {
+    // Allow up to 3 retries, 20 seconds each, for the USB hub port power server to respond
+    runCommand('USB hub port power server command', "hubs ${devices} reset", 3, 20, 'SECONDS')
 }
